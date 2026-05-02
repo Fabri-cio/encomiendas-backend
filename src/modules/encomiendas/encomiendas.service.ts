@@ -24,8 +24,13 @@ export class EncomiendasService {
     return await this.encomiendaRepository.save(encomienda);
   }
 
-  findAll() {
-    return `This action returns all encomiendas`;
+  // obtener toda las encomiendas
+  async findAll() {
+    return await this.encomiendaRepository.find({
+      order: {
+        creadoEn: 'DESC', // ordenar por fecha de creación descendente osea la mas reciente primero
+      },
+    });
   }
 
   findOne(id: number) {

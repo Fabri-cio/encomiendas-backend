@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { EstadoEncomienda } from '../enums/estado-encomienda.enum';
 
 @Entity()
@@ -42,4 +48,11 @@ export class Encomienda {
     default: EstadoEncomienda.CREADA,
   })
   estado: EstadoEncomienda;
+
+  //auditoria
+  @CreateDateColumn()
+  creadoEn: Date;
+
+  @UpdateDateColumn()
+  actualizadoEn: Date;
 }
