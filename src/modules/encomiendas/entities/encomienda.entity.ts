@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { EstadoEncomienda } from '../enums/estado-encomienda.enum';
 
@@ -55,4 +56,7 @@ export class Encomienda {
 
   @UpdateDateColumn()
   actualizadoEn: Date;
+
+  @DeleteDateColumn() //guarda fecha de eliminacion si es null activo, si tiene fecha esta eliminado
+  eliminadoEn: Date;
 }

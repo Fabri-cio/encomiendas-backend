@@ -39,11 +39,11 @@ export class EncomiendasController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const encomienda = await this.encomiendasService.findOne(+id);
-    
-    return{
+
+    return {
       message: 'Encomienda obtenida exitosamente',
       data: encomienda,
-    } 
+    };
   }
 
   @Patch(':id')
@@ -55,7 +55,13 @@ export class EncomiendasController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
+    // no hace falta await porque nest internamente hace el await
+    // solo se usa await si necesitamos hacer algo antes de retornar la respuesta
     return this.encomiendasService.remove(+id);
+  }
+  @Patch('restore/:id')
+  async restore(@Param('id') id: string) {
+    return this.encomiendasService.restore(+id);
   }
 }
