@@ -17,8 +17,9 @@ export class EncomiendasController {
 
   @Post()
   async create(@Body() createEncomiendaDto: CreateEncomiendaDto) {
-    const encomienda = await this.encomiendasService.create(createEncomiendaDto);
-    
+    const encomienda =
+      await this.encomiendasService.create(createEncomiendaDto);
+
     return {
       message: 'Encomienda creada exitosamente',
       data: encomienda,
@@ -26,13 +27,23 @@ export class EncomiendasController {
   }
 
   @Get()
-  findAll() {
-    return this.encomiendasService.findAll();
+  async findAll() {
+    const encomiendas = await this.encomiendasService.findAll();
+
+    return {
+      message: 'Encomiendas obtenidas exitosamente',
+      data: encomiendas,
+    };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.encomiendasService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const encomienda = await this.encomiendasService.findOne(+id);
+    
+    return{
+      message: 'Encomienda obtenida exitosamente',
+      data: encomienda,
+    } 
   }
 
   @Patch(':id')

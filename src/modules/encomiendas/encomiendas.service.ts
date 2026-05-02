@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEncomiendaDto } from './dto/create-encomienda.dto';
 import { UpdateEncomiendaDto } from './dto/update-encomienda.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,8 +33,16 @@ export class EncomiendasService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} encomienda`;
+  async findOne(id: number) {
+    //si no se pone await, no servira el throw NotFoundException y no mandara el 404 si no  hay el recurso
+    const encomienda = await this.encomiendaRepository.findOneBy({ id });
+
+    if (!encomienda) {
+      //ecaptura el error, lo convierte en HTTP response, manda 404 automático
+      throw new NotFoundException('Encomienda no encontrada');
+    }
+
+    return encomienda;
   }
 
   update(id: number, updateEncomiendaDto: UpdateEncomiendaDto) {
