@@ -1,9 +1,14 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateEncomiendaDto } from './dto/create-encomienda.dto';
 import { UpdateEncomiendaDto } from './dto/update-encomienda.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Encomienda } from './entities/encomienda.entity';
 import { Repository } from 'typeorm';
+import { EstadoEncomienda } from './enums/estado-encomienda.enum';
 
 @Injectable()
 export class EncomiendasService {
@@ -45,8 +50,26 @@ export class EncomiendasService {
     return encomienda;
   }
 
-  update(id: number, updateEncomiendaDto: UpdateEncomiendaDto) {
-    return `This action updates a #${id} encomienda`;
+  //actualizar encomienda
+  async update(id: number, updateEncomiendaDto: UpdateEncomiendaDto) {
+    const encomienda = await this.encomiendaRepository.findOne({
+      where: { id },
+    }); // 🔥 FIX IMPORTANTE TAMBIÉN AQUÍ
+
+    if (!encomienda) {
+      throw new NotFoundException('Encomienda no encontrada');
+    }
+
+    // 🔥 REGLA 1: no modificar si ya fue entregada
+    if (encomienda.estado === EstadoEncomienda.ENTREGADA) {
+      throw new BadRequestException(
+        'No se puede actualizar una encomienda entregada',
+      );
+    }
+
+    Object.assign(encomienda, updateEncomiendaDto);
+
+    return await this.encomiendaRepository.save(encomienda);
   }
 
   remove(id: number) {

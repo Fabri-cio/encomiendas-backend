@@ -1,3 +1,5 @@
+import { EstadoEncomienda } from '../enums/estado-encomienda.enum';
+
 export class CreateEncomiendaDto {
   nombreRemitente: string;
   telefonoRemitente: string;
@@ -10,6 +12,8 @@ export class CreateEncomiendaDto {
 
   peso: number;
   descripcion?: string;
+
+  estado?: EstadoEncomienda; //esta tipado con el enum EstadoEncomienda y no asi como string
 
   //id, estado, codigoSeguimiento lo maneja el backend no es necesario enviarlo
 }
