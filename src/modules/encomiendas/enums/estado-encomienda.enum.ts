@@ -1,0 +1,6 @@
+export enum EstadoEncomienda {
+  CREADA = 'CREADA',
+  EN_TRANSITO = 'EN_TRANSITO',
+  ENTREGADA = 'ENTREGADA',
+  CANCELADA = 'CANCELADA',
+}
