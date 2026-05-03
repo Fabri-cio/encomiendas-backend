@@ -7,6 +7,7 @@ import { CreateEncomiendaDto } from './dto/create-encomienda.dto';
 import { UpdateEncomiendaDto } from './dto/update-encomienda.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Encomienda } from './entities/encomienda.entity';
+import { EncomiendaTracking } from './entities/encomienda-tracking.entity';
 import { IsNull, Repository } from 'typeorm';
 import { EstadoEncomienda } from './enums/estado-encomienda.enum';
 
@@ -15,6 +16,9 @@ export class EncomiendasService {
   constructor(
     @InjectRepository(Encomienda)
     private encomiendaRepository: Repository<Encomienda>, //todos los repositorios acceden a la base de datos
+
+    @InjectRepository(EncomiendaTracking)
+    private trackingRepository: Repository<EncomiendaTracking>,
   ) {}
 
   //Crear encomienda con codigo de seguimiento
@@ -27,7 +31,18 @@ export class EncomiendasService {
       ...createEncomiendaDto,
       codigoSeguimiento: codigo,
     });
-    return this.encomiendaRepository.save(encomienda);
+
+    const saved = await this.encomiendaRepository.save(encomienda);
+
+    //crear primer tracking
+    const tracking = this.trackingRepository.create({
+      estado: EstadoEncomienda.CREADA,
+      encomienda: saved,
+    });
+
+    await this.trackingRepository.save(tracking);
+
+    return saved;
   }
 
   // obtener toda las encomiendas
@@ -73,9 +88,26 @@ export class EncomiendasService {
       );
     }
 
+    const estadoAnterior = encomienda.estado;
+
     Object.assign(encomienda, updateEncomiendaDto);
 
-    return await this.encomiendaRepository.save(encomienda);
+    const updated = await this.encomiendaRepository.save(encomienda);
+
+    //si cambio el estado --- guardar trancking
+    if (
+      updateEncomiendaDto.estado &&
+      updateEncomiendaDto.estado !== estadoAnterior
+    ) {
+      const tracking = this.trackingRepository.create({
+        estado: updateEncomiendaDto.estado,
+        encomienda: updated,
+      });
+
+      await this.trackingRepository.save(tracking);
+    }
+
+    return updated;
   }
 
   //para eliminar encomienda
@@ -118,5 +150,21 @@ export class EncomiendasService {
     return {
       message: 'Encomienda restaurada correctamente',
     };
+  }
+
+  //endpoint para obtener el tracking de una encomienda
+  async getTracking(id: number) {
+    const encomienda = await this.encomiendaRepository.findOne({
+      where: { id },
+    });
+
+    if (!encomienda) {
+      throw new NotFoundException('Encomienda no encontrada');
+    }
+
+    return this.trackingRepository.find({
+      where: { encomienda: { id } },
+      order: { fecha: 'ASC' },
+    });
   }
 }

@@ -3,9 +3,10 @@ import { EncomiendasService } from './encomiendas.service';
 import { EncomiendasController } from './encomiendas.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Encomienda } from './entities/encomienda.entity';
+import { EncomiendaTracking } from './entities/encomienda-tracking.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Encomienda])], // Importa el entity de encomienda para que TypeORM lo use
+  imports: [TypeOrmModule.forFeature([Encomienda, EncomiendaTracking])], // Importa el entity de encomienda para que TypeORM lo use
   controllers: [EncomiendasController],
   providers: [EncomiendasService],
 })

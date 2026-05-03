@@ -64,4 +64,14 @@ export class EncomiendasController {
   async restore(@Param('id') id: string) {
     return this.encomiendasService.restore(+id);
   }
+
+  @Get('tracking/:id')
+  async getTracking(@Param('id') id: string) {
+    const data = await this.encomiendasService.getTracking(+id);
+
+    return {
+      message: 'Tracking obtenido exitosamente',
+      data,
+    };
+  }
 }

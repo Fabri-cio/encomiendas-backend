@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { EstadoEncomienda } from '../enums/estado-encomienda.enum';
+import { EncomiendaTracking } from './encomienda-tracking.entity';
 
 @Entity()
 export class Encomienda {
@@ -59,4 +61,7 @@ export class Encomienda {
 
   @DeleteDateColumn() //guarda fecha de eliminacion si es null activo, si tiene fecha esta eliminado
   eliminadoEn: Date;
+
+  @OneToMany(() => EncomiendaTracking, (tracking) => tracking.encomienda)
+  tracking: EncomiendaTracking[];
 }
