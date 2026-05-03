@@ -13,9 +13,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    // este retorna el token que contiene (userId, email, rol, iat, exp)
     return {
       userId: payload.sub,
       email: payload.email,
+      rol: payload.rol,
     };
   }
 }

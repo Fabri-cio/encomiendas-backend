@@ -13,7 +13,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt')) // Protege todas las rutas de este controlador con JWT
+@UseGuards(AuthGuard('jwt')) // Protege todas las rutas de este controlador con JWT pero no esta validando que tipo de usuario es
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

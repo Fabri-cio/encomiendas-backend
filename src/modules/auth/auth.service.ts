@@ -23,7 +23,8 @@ export class AuthService {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    //si no se manda el rol en el token → el guard no funciona
+    const payload = { sub: user.id, email: user.email, rol: user.rol };
 
     return {
       message: 'Login exitoso',

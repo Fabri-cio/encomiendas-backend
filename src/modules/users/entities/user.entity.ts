@@ -1,5 +1,11 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Rol } from '../enums/rol.enum';
 
 @Entity()
 export class User {
@@ -17,4 +23,11 @@ export class User {
   // se genera automaticamente la fecha de creacion no es necesario mandar con POST
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({
+    type: 'enum',
+    enum: Rol,
+    default: Rol.OPERADOR,
+  })
+  rol: Rol;
 }
