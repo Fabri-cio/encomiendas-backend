@@ -15,25 +15,34 @@ import { EncomiendasModule } from './modules/encomiendas/encomiendas.module';
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('DB_HOST'),
-        port: parseInt(config.get<string>('DB_PORT') || '5432'),
-        username: config.get<string>('DB_USER'),
-        password: config.get<string>('DB_PASS'),
-        database: config.get<string>('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: true,
-        // desde aqui no es lo ideal para produccion porque ingresa directamente sin verificar el certificado
-        ssl: {
-          rejectUnauthorized: false,
-        },
-        extra: {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const isProd = config.get<string>('NODE_ENV') === 'production';
+
+        // PRODUCCIÓN (Supabase)
+        if (isProd) {
+          return {
+            type: 'postgres',
+            url: config.get<string>('DATABASE_URL'),
+            autoLoadEntities: true,
+            synchronize: true, // luego lo cambias a false
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          };
+        }
+
+        // DESARROLLO (local)
+        return {
+          type: 'postgres',
+          host: config.get<string>('DB_HOST'),
+          port: parseInt(config.get<string>('DB_PORT') || '5432'),
+          username: config.get<string>('DB_USER'),
+          password: config.get<string>('DB_PASS'),
+          database: config.get<string>('DB_NAME'),
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
     }),
     UsersModule,
     AuthModule,
