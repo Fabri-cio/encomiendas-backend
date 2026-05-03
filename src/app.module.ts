@@ -24,11 +24,15 @@ import { EncomiendasModule } from './modules/encomiendas/encomiendas.module';
         database: config.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-        logging: config.get('NODE_ENV') === 'development',
-        ssl:
-          config.get<string>('NODE_ENV') === 'production'
-            ? { rejectUnauthorized: false }
-            : false,
+        // desde aqui no es lo ideal para produccion porque ingresa directamente sin verificar el certificado
+        ssl: {
+          rejectUnauthorized: false,
+        },
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
       }),
     }),
     UsersModule,
