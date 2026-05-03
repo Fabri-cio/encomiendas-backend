@@ -23,7 +23,7 @@ import { EncomiendasModule } from './modules/encomiendas/encomiendas.module';
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
         logging: config.get('NODE_ENV') === 'development',
         ssl:
           config.get<string>('NODE_ENV') === 'production'
