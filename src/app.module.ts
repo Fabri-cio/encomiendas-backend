@@ -16,28 +16,24 @@ import { EncomiendasModule } from './modules/encomiendas/encomiendas.module';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const isProd = config.get<string>('NODE_ENV') === 'production';
+        const isProduction = config.get<string>('NODE_ENV') === 'production';
 
-        // PRODUCCIÓN (Supabase)
-        if (isProd) {
+        if (isProduction) {
+          // En producción, usa la URL de la base de datos
           return {
             type: 'postgres',
             url: config.get<string>('DATABASE_URL'),
             autoLoadEntities: true,
-            synchronize: true, // luego lo cambias a false
-            ssl: {
-              rejectUnauthorized: false,
-            },
+            synchronize: true,
           };
         }
 
-        // DESARROLLO (local)
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
           port: parseInt(config.get<string>('DB_PORT') || '5432'),
-          username: config.get<string>('DB_USER'),
-          password: config.get<string>('DB_PASS'),
+          username: config.get<string>('DB_USERNAME'),
+          password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_NAME'),
           autoLoadEntities: true,
           synchronize: true,
