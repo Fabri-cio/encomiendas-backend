@@ -21,6 +21,9 @@ import { EncomiendasModule } from './modules/encomiendas/encomiendas.module';
         autoLoadEntities: true,
         synchronize: config.get('NODE_ENV') === 'development',
         logging: config.get('NODE_ENV') === 'development',
+        // en la url externa de la DB se agrega ?ssl=true al final en .env 
+        // para conectarse con la DB en producción o tambien 
+        // (realizar las migraciones con pnpm run migration:run)
         ssl:
           config.get('NODE_ENV') === 'production'
             ? { rejectUnauthorized: false }
